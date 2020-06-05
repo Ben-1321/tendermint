@@ -7,6 +7,7 @@ import (
 
 	dbm "github.com/tendermint/tm-db"
 
+	tmjson "github.com/tendermint/tendermint/libs/json"
 	"github.com/tendermint/tendermint/types"
 )
 
@@ -370,7 +371,7 @@ type BlockStoreStateJSON struct {
 
 // Save persists the blockStore state to the database as JSON.
 func (bsj BlockStoreStateJSON) Save(db dbm.DB) {
-	bytes, err := cdc.MarshalJSON(bsj)
+	bytes, err := tmjson.Marshal(bsj)
 	if err != nil {
 		panic(fmt.Sprintf("Could not marshal state bytes: %v", err))
 	}
@@ -391,7 +392,7 @@ func LoadBlockStoreStateJSON(db dbm.DB) BlockStoreStateJSON {
 		}
 	}
 	bsj := BlockStoreStateJSON{}
-	err = cdc.UnmarshalJSON(bytes, &bsj)
+	err = tmjson.Unmarshal(bytes, &bsj)
 	if err != nil {
 		panic(fmt.Sprintf("Could not unmarshal bytes: %X", bytes))
 	}
